@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jsrc4.js"></script>
+</head>
+<body>
+<script>
+    var key = new Uint8Array(16);
+    for (var i = 0; i < 16; i++) {
+        key[i] = i;
+    }
+    var plainText1 = new Uint8Array(3);
+    var plainText2 = new Uint8Array(3);
+    plainText1[0] = 0;
+    plainText1[1] = 1;
+    plainText1[2] = 2;
+    plainText2[0] = 3;
+    plainText2[1] = 4;
+    plainText2[2] = 5;
+    var cipherText1 = new Uint8Array(3);
+    var cipherText2 = new Uint8Array(3);
+    var decryptedText1 = new Uint8Array(3);
+    var decryptedText2 = new Uint8Array(3);
+
+    var cipher = new RC4(key);
+    cipher.update(cipherText1, plainText1, 3);
+    cipher.update(cipherText2, plainText2, 3);
+
+    var decipher = new RC4(key);
+    decipher.update(decryptedText1, cipherText1, 3);
+    decipher.update(decryptedText2, cipherText2, 3);
+
+    console.log(cipherText1[0].toString(16));
+    console.log(cipherText1[1].toString(16));
+    console.log(cipherText1[2].toString(16));
+    console.log(cipherText2[0].toString(16));
+    console.log(cipherText2[1].toString(16));
+    console.log(cipherText2[2].toString(16));
+
+    console.assert(plainText1[0] == decryptedText1[0]);
+    console.assert(plainText1[1] == decryptedText1[1]);
+    console.assert(plainText1[2] == decryptedText1[2]);
+
+    console.assert(plainText2[0] == decryptedText2[0]);
+    console.assert(plainText2[1] == decryptedText2[1]);
+    console.assert(plainText2[2] == decryptedText2[2]);
+
+    // performance test
+    var plainText = new Uint8Array(1500);
+    var cipherText = new Uint8Array(1500);
+    cipher = new RC4(key);
+    var start = new Date().getTime();
+    // 300MB data
+    for (var i = 0; i < 1024 * 200; i++) {
+        cipher.update(cipherText, plainText, 1500);
+    }
+    var end = new Date().getTime();
+    console.log((150 * 2000 / (end - start)) + 'MB/s');
+
+
+</script>
+</body>
+</html>
